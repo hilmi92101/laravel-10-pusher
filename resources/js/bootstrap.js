@@ -58,7 +58,7 @@ window.EchoPresence = new Echo({
 
                 axios.post('/api/broadcasting/auth', data, config) 
                 .then(response => { 
-                    console.log(response)
+                    //console.log(response)
                     callback(false, response.data); 
                 }) 
                 .catch(error => { 

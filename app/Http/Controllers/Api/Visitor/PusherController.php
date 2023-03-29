@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Visitor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -20,14 +21,13 @@ class PusherController extends Controller
     public function createToken(Request $request)
     {
         $this->deleteOldVisitors();
-        //$this->deleteOldTokens();
+        $this->deleteOldTokens();
         $this->storeVisitor();
         $this->generateToken();
 
         return response()->json([   
             'success' => true,   
             'token' => $this->token,   
-            //'token_expires_at' => $this->token_expires_at
         ]);
     }
 
@@ -40,7 +40,7 @@ class PusherController extends Controller
     public function deleteOldTokens()
     {
         $hours_ago = Carbon::now()->subHours($this->hours);
-        Token::where('name', $this->token_name)->where('created_at', '<=', $hours_ago)->delete();
+        PersonalAccessToken::where('name', $this->token_name)->where('created_at', '<=', $hours_ago)->delete();
     }
 
     private function storeVisitor()
@@ -56,9 +56,6 @@ class PusherController extends Controller
     private function generateToken()
     {
         $visitor = $this->visitor;
-        //$expires_at = now()->addHours($this->hours);
-
         $this->token = $visitor->createToken($this->token_name)->plainTextToken;
-        //$this->token_expires_at = $expires_at->toDateTimeString();
     }
 }

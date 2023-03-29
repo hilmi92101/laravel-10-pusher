@@ -25,26 +25,35 @@
 
         axios.post(route('visitor.createToken'), config)
         .then((response) => {
-            console.log(response.data);
+            //console.log(response.data);
             var token = response.data.token;
             localStorage.setItem('visitor_token', token);
 
-            console.log(window.EchoPresence)
+            //console.log(window.EchoPresence)
+            let numUsers = 1; 
             window.EchoPresence
                 .join('visitor-counter', () => {
                     console.log('Joined visitors-counter channel');
                 })
                 .here(users => {
                     console.log(`Visitors-counter channel has ${users.length} users`);
-                    console.log(users);
+                    //console.log(users);
                 })
                 .joining(user => {
-                    console.log(`User ${user.id} joined the visitors-counter channel`);
-                    console.log(user);
+                    numUsers++; 
+                    //console.log(`User ${user.id} joined the visitors-counter channel`);
+                    //console.log(user);
+                    console.log(`Visitors-counter channel now has ${numUsers} users (J)`);
                 })
                 .leaving(user => {
-                    console.log(`User ${user.id} left the visitors-counter channel`);
-                    console.log(user);
+                    numUsers--; 
+                    if(numUsers == 0){
+                        numUsers = 1;
+                    }
+
+                    //console.log(`User ${user.id} left the visitors-counter channel`);
+                    //console.log(user);
+                    //console.log(`Visitors-counter channel now has ${numUsers} users`);
                 });
         })
         .catch(function (error) {
